@@ -3,7 +3,12 @@ package cos.mos.kjni;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
+/**
+ * https://www.csdn.net/gather_22/MtTakg5sNTUyNy1ibG9n.html
+ *https://blog.csdn.net/kobe269/article/details/40378377
+ *https://github.com/houxiaohou/Guitar-Tunner
+ *https://www.cnblogs.com/tt2015-sz/p/5616534.html
+ * */
 public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
