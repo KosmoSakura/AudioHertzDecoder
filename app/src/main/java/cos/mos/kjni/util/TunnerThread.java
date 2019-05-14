@@ -11,7 +11,7 @@ import android.os.Handler;
  */
 public class TunnerThread extends Thread {
     static {
-        System.loadLibrary("FFT");
+        System.loadLibrary("sakura");
     }
 
     public native double processSampleData(byte[] sample, int sampleRate);
