@@ -3,15 +3,14 @@
 cmake_minimum_required(VERSION 3.4.1)
 # 生成的so动态库最后输出的路径
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/main/clibs/${ANDROID_ABI})
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI})
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/${ANDROID_ABI})
 
 # Gradle会自动打包与APK共享的库。
 # add_library的3个参数：
 # 参数1：编译生成本地库的名字
 # 参数2：SHARED 表示生成的是动态链接库
 # 参数3：(可变参数)参与编译文件的路径（注意，CMakeLists的路径，本页所有路径都是相对于CMakeLists而言
-file(GLOB SOURCES src/main/cpp/*.cpp)
+#file(GLOB SOURCES src/main/cpp/*.cpp)
+file(GLOB SOURCES src/main/cpp/*)
 message(STATUS "SOURCES = ${SOURCES}")
 add_library(sakura SHARED ${SOURCES})
 

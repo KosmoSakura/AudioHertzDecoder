@@ -30,6 +30,7 @@ fastlane/readme.md
 *.log
 *.iml
 *.jks
+*.so
 
 # 忽略文件夹
 .gradle/
