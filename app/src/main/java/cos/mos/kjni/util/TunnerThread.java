@@ -17,13 +17,10 @@ public class TunnerThread extends Thread {
     public native double processSampleData(byte[] sample, int sampleRate);
 
     private static final int[] OPT_SAMPLE_RATES = {11025, 8000, 22050, 44100};
-    private static final int[] BUFFERSIZE_PER_SAMPLE_RATE = {8 * 1024,
-        4 * 1024, 16 * 1024, 32 * 1024};
-
-    private int SAMPLE_RATE = 8000;
-    private int READ_BUFFERSIZE = 4 * 1024;
-    private double currentFrequency;
-
+    private static final int[] BUFFERSIZE_PER_SAMPLE_RATE = {8 * 1024, 4 * 1024, 16 * 1024, 32 * 1024};
+    private int SAMPLE_RATE = 8000;//采样率
+    private int READ_BUFFERSIZE = 4 * 1024;//缓冲区大小
+    private double currentFrequency;//频率
     private Handler handler;
     private Runnable callback;
     private AudioRecord audioRecord;
@@ -76,8 +73,7 @@ public class TunnerThread extends Thread {
     }
 
     public void close() {
-        if (audioRecord != null
-            && audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
+        if (audioRecord != null && audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
             audioRecord.stop();
             audioRecord.release();
         }

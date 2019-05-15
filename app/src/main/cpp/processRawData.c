@@ -4,8 +4,6 @@
 #include <android/log.h>
 #include <math.h>
 
-const float PI = 3.14159265358979323846f;
-
 /////////////////////   faster algorithm /////////////////
 void makewt(int nw, int *ip, double *w) {
     void bitrv2(int n, int *ip, double *a);
@@ -346,7 +344,7 @@ double newFFT(double *padSample, int sampleLength, jint sampleRate) {
 ///// end faster algorithm ///////////////////
 // Hanning Window
 double singleHanning(double value, int i, int windowLength) {
-    return value * (0.5 - (0.5 * cos((2.0 * PI * i) / (windowLength - 1))));
+    return value * (0.5 - (0.5 * cos((2.0 * M_PI * i) / (windowLength - 1))));
 }
 
 //cos.mos.kjni.util
