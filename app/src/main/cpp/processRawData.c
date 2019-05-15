@@ -348,7 +348,7 @@ double singleHanning(double value, int i, int windowLength) {
 }
 
 //cos.mos.kjni.util
-jdouble Java_cos_mos_kjni_util_TunnerThread_processSampleData(JNIEnv *env, jobject thiz,
+jdouble Java_cos_mos_kjni_util_UJni_processSampleData(JNIEnv *env, jobject thiz,
                                                                        jbyteArray sample,
                                                                        jint sampleRate) {
     jsize sampleLength = (*env)->GetArrayLength(env, sample);

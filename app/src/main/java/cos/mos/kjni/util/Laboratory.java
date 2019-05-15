@@ -1,5 +1,13 @@
 package cos.mos.kjni.util;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * @Description: 实验室
  * @Author: Kosmos
@@ -7,17 +15,32 @@ package cos.mos.kjni.util;
  * @Email: KosmoSakura@gmail.com
  */
 public class Laboratory {
-    static {
-        System.loadLibrary("sakura");
-    }
+    private static Disposable subscribe;
+    private static boolean sss;
 
     public static void main(String[] args) {
-        System.out.println(":->" + stringFromJNI());
+        log("开始执行RxJava");
+        sss = true;
+        Disposable subscribe = Observable.interval(1, TimeUnit.SECONDS, Schedulers.trampoline())
+//            .take(10)
+            .takeWhile(new Predicate<Long>() {
+                @Override
+                public boolean test(Long aLong) throws Exception {
+                    return sss;
+                }
+            })
+            .subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    log("->" + aLong);
+                    if (aLong == 5) {
+                        sss = false;
+                    }
+                }
+            });
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public static native String stringFromJNI();
+    private static void log(String str) {
+        System.out.println(str + ",线程名：" + Thread.currentThread().getName());
+    }
 }

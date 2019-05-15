@@ -28,9 +28,9 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['clibs']
-            sourceSets.all { set ->
-                println("${set.name} --> ${set.java.srcDirs}")
-            }
+//            sourceSets.all { set ->
+//                println("${set.name} --> ${set.java.srcDirs}")
+//            }
         }
     }
     buildTypes {
@@ -38,6 +38,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

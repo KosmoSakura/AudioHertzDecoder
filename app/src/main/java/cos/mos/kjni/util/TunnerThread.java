@@ -10,12 +10,6 @@ import android.os.Handler;
  * @Description: 通过调用FFT方法来实时计算输入音频的频率
  */
 public class TunnerThread extends Thread {
-    static {
-        System.loadLibrary("sakura");
-    }
-
-    public native double processSampleData(byte[] sample, int sampleRate);
-
     private static final int[] OPT_SAMPLE_RATES = {11025, 8000, 22050, 44100};
     private static final int[] BUFFERSIZE_PER_SAMPLE_RATE = {8 * 1024, 4 * 1024, 16 * 1024, 32 * 1024};
     private int SAMPLE_RATE = 8000;//采样率
@@ -57,7 +51,7 @@ public class TunnerThread extends Thread {
         audioRecord.startRecording();
         byte[] bufferRead = new byte[READ_BUFFERSIZE];
         while (audioRecord.read(bufferRead, 0, READ_BUFFERSIZE) > 0) {
-            currentFrequency = processSampleData(bufferRead, SAMPLE_RATE);
+            currentFrequency = UJni.processSampleData(bufferRead, SAMPLE_RATE);
             if (currentFrequency > 0) {
                 handler.post(callback);
                 try {
