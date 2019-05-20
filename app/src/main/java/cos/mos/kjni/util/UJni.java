@@ -11,5 +11,5 @@ public class UJni {
         System.loadLibrary("sakura");
     }
 
-    public static native double processSampleData(byte[] sample, int sampleRate);
+    public static native double runFFT(byte[] sample, int sampleRate);
 }

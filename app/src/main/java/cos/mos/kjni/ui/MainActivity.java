@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private void runnn() {
         UTuner.instance().run(new UTuner.HzListener() {
             @Override
-            public void sampleRate(double frequency) {
-                String hz = UUnit.unitsFormat(frequency, "Hz");
+            public void awaken(double hertz, double volume) {
+                String hz = UUnit.unitsFormat(hertz, "Hz");
                 ULog.commonD(hz);
                 frequencyView.setText(hz);
             }

@@ -51,7 +51,7 @@ public class TunnerThread extends Thread {
         audioRecord.startRecording();
         byte[] bufferRead = new byte[READ_BUFFERSIZE];
         while (audioRecord.read(bufferRead, 0, READ_BUFFERSIZE) > 0) {
-            currentFrequency = UJni.processSampleData(bufferRead, SAMPLE_RATE);
+            currentFrequency = UJni.runFFT(bufferRead, SAMPLE_RATE);
             if (currentFrequency > 0) {
                 handler.post(callback);
                 try {

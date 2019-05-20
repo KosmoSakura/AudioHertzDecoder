@@ -5,11 +5,15 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
-import java.util.concurrent.TimeUnit;
-
+import cos.mos.kjni.hertz.FFT;
+import cos.mos.kjni.hertz.VoiceUtil;
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @Description: 解析音频流频率
@@ -28,7 +32,6 @@ public class UTuner {
     private AudioRecord audioRecord;
     private Disposable subscribe;
     private static UTuner tuner;
-    private boolean running;
     private final Handler delivery = new Handler(Looper.getMainLooper());
 
     private UTuner() {
@@ -43,7 +46,6 @@ public class UTuner {
     }
 
     private void check() {
-        running = true;
         if (audioRecord == null) {
             // 每个device的初始化参数可能不同
             int counter = 0;
@@ -64,22 +66,66 @@ public class UTuner {
         }
     }
 
+    /**
+     * 纯Java方法
+     */
+    public void runOnlyJava(final HzListener listener) {
+        check();
+        audioRecord.startRecording();//开始采集
+        final byte[] bufferRead = new byte[READ_BUFFERSIZE];
+        FFT fft = new FFT();
+        int read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
+        while (read >= AudioRecord.SUCCESS) {
+
+            listener.awaken(fft.getFrequency(bufferRead, SAMPLE_RATE, READ_BUFFERSIZE),
+                VoiceUtil.getVolume(bufferRead, read));
+            SystemClock.sleep(10);
+            if (audioRecord == null) {
+                read = -1;
+            } else {
+                read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
+            }
+            SystemClock.sleep(10);
+        }
+    }
+
+    /**
+     * jni
+     */
     public void run(final HzListener listener) {
         check();
         audioRecord.startRecording();//开始采集
         final byte[] bufferRead = new byte[READ_BUFFERSIZE];
-        final Runnable runnable = () -> listener.sampleRate(UJni.processSampleData(bufferRead, SAMPLE_RATE));
-        subscribe = Observable.interval(50, TimeUnit.MICROSECONDS)
-            .takeWhile(aLong -> running)
-            .subscribe(aLong -> {
-                if (audioRecord.read(bufferRead, 0, READ_BUFFERSIZE) >= AudioRecord.SUCCESS) {
-                    delivery.post(runnable);
+        subscribe = Observable.create((ObservableOnSubscribe<Double>) emitter -> {
+            if (audioRecord != null) {
+                int read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
+                while (read >= AudioRecord.SUCCESS) {
+                    emitter.onNext(UJni.runFFT(bufferRead, SAMPLE_RATE));
+                    SystemClock.sleep(10);
+                    if (audioRecord == null) {
+                        read = -1;
+                    } else {
+                        read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
+                    }
                 }
+            }
+        }).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(hertz -> {
+                listener.awaken(hertz, 0);
+                ULog.commonD("启动：：" + hertz);
             });
+//        final Runnable runnable = () -> listener.sampleRate(UJni.runFFT(bufferRead, SAMPLE_RATE));
+//        subscribe = Observable.interval(50, TimeUnit.MICROSECONDS)
+//            .takeWhile(aLong -> running)
+//            .subscribe(aLong -> {
+//                if (audioRecord.read(bufferRead, 0, READ_BUFFERSIZE) >= AudioRecord.SUCCESS) {
+//                    delivery.post(runnable);
+//                }
+//            });
     }
 
     public void clear() {
-        running = false;
         if (subscribe != null) {
             if (!subscribe.isDisposed()) {
                 subscribe.dispose();
@@ -97,6 +143,6 @@ public class UTuner {
     }
 
     public interface HzListener {
-        void sampleRate(double frequency);
+        void awaken(double hertz, double volume);
     }
 }
