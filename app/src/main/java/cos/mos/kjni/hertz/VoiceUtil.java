@@ -9,20 +9,16 @@ package cos.mos.kjni.hertz;
  */
 public class VoiceUtil {
     /**
-     * 获取声音的分贝
-     *
-     * @param bufferRead
-     * @param lenght
-     * @return
+     * @param bufferRead 字节流
+     * @param read     字节长度
+     * @return 获取声音的分贝
      */
-    public static double getVolume(byte[] bufferRead, int lenght) {
+    public static double getVolume(byte[] bufferRead, int read) {
         int volume = 0;
-
-        for (int i = 0; i < bufferRead.length; i++) {
-            volume += bufferRead[i] * bufferRead[i];
+        for (byte b : bufferRead) {
+            volume += b * b;
         }
-
-        double mean = volume / (float) lenght;
-        return mean;//10 * Math.log10(mean);
+        //10 * Math.log10(mean);
+        return volume / (float) read;
     }
 }

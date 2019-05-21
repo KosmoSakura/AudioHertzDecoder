@@ -76,7 +76,6 @@ public class UTuner {
         FFT fft = new FFT();
         int read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
         while (read >= AudioRecord.SUCCESS) {
-
             listener.awaken(fft.getFrequency(bufferRead, SAMPLE_RATE, READ_BUFFERSIZE),
                 VoiceUtil.getVolume(bufferRead, read));
             SystemClock.sleep(10);
