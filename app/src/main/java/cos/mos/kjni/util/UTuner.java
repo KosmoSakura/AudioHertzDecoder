@@ -100,8 +100,15 @@ public class UTuner {
             if (audioRecord != null) {
                 int read = audioRecord.read(bufferRead, 0, READ_BUFFERSIZE);
                 while (read >= AudioRecord.SUCCESS) {
-                    emitter.onNext(UJni.runFFT(bufferRead, SAMPLE_RATE));
-                    SystemClock.sleep(10);
+                    double fft = UJni.runFFT(bufferRead, SAMPLE_RATE);
+                    if (fft > 0) {
+                        emitter.onNext(fft);
+                        if (audioRecord != null && audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
+                            audioRecord.stop();
+                            SystemClock.sleep(20);
+                            audioRecord.startRecording();
+                        }
+                    }
                     if (audioRecord == null) {
                         read = -1;
                     } else {
