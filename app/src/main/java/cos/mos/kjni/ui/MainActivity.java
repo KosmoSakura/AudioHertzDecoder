@@ -17,6 +17,7 @@ import cos.mos.kjni.util.UTuner;
 import cos.mos.kjni.util.UUnit;
 
 /**
+ * 参考：
  * https://www.csdn.net/gather_22/MtTakg5sNTUyNy1ibG9n.html
  * https://blog.csdn.net/kobe269/article/details/40378377
  * https://github.com/houxiaohou/Guitar-Tunner
